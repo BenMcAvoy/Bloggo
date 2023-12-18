@@ -5,10 +5,9 @@ import (
 	"bloggo/templates"
 	"bytes"
 	"context"
-	"log"
 	"os"
 	"path/filepath"
-	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/yuin/goldmark"
@@ -37,11 +36,11 @@ var md = goldmark.New(
 	),
 )
 
-func toHtml(filename string) (string, error) {
+func toHtml(filename string) (map[string]string, error) {
 	input, err := os.ReadFile(filename)
 
 	if err != nil {
-		return "", err
+		logger.Fatal(err)
 	}
 
 	var html bytes.Buffer
@@ -49,17 +48,17 @@ func toHtml(filename string) (string, error) {
 		logger.Errorf("Failed to convert %v", err)
 	}
 
-	return html.String(), nil
+	return map[string]string{filename: html.String()}, nil
 }
 
-func dirToHtml(dir string) []string {
+func dirToHtml(dir string) map[string]string {
 	files, err := os.ReadDir(dir)
 
 	if err != nil {
 		logger.Fatal(err)
 	}
 
-	var htmlFiles []string
+	var htmlFiles = make(map[string]string)
 	for _, file := range files {
 		if !file.IsDir() {
 			html, err := toHtml(filepath.Join(dir, file.Name()))
@@ -68,7 +67,14 @@ func dirToHtml(dir string) []string {
 				logger.Fatal(err)
 			}
 
-			htmlFiles = append(htmlFiles, html)
+			for filename, content := range html {
+				pat := filepath.Base(filename)
+				ext := filepath.Ext(filename)
+
+				key := strings.TrimSuffix(pat, ext)
+
+				htmlFiles[key] = content
+			}
 		}
 	}
 
@@ -90,12 +96,7 @@ func main() {
 	posts := dirToHtml(conf.String("directories.posts"))
 
 	server.GET("/post/:id", func(ctx echo.Context) error {
-		id, err := strconv.Atoi(ctx.Param("id"))
-
-		if err != nil {
-			log.Fatal("Failed to convert ID to string.")
-		}
-
+		id := ctx.Param("id")
 		return templates.Post(posts[id]).Render(context.Background(), ctx.Response().Writer)
 	})
 
