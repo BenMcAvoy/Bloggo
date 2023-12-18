@@ -80,19 +80,14 @@ func main() {
 		logger.Fatalf("Error loding config: %v", err)
 	}
 
-	posts_directory := conf.String("directories.posts")
-
-	html := dirToHtml(posts_directory)
-
-	logger.Info(html)
-
 	server := echo.New()
-
 	server.Use(logging.LogMiddleware(logger))
 
 	server.GET("/", func(ctx echo.Context) error {
 		return templates.Index().Render(context.Background(), ctx.Response().Writer)
 	})
+
+	posts := dirToHtml(conf.String("directories.posts"))
 
 	server.GET("/post/:id", func(ctx echo.Context) error {
 		id, err := strconv.Atoi(ctx.Param("id"))
@@ -101,7 +96,7 @@ func main() {
 			log.Fatal("Failed to convert ID to string.")
 		}
 
-		return templates.Post(html[id]).Render(context.Background(), ctx.Response().Writer)
+		return templates.Post(posts[id]).Render(context.Background(), ctx.Response().Writer)
 	})
 
 	logger.Fatal(server.Start(":1323"))
