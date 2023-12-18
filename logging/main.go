@@ -32,7 +32,7 @@ func LogMiddleware(logger *log.Logger) echo.MiddlewareFunc {
 func New() *log.Logger {
 	styles := log.DefaultStyles()
 	styles.Levels[log.InfoLevel] = lipgloss.NewStyle().
-		SetString("INFO").
+		SetString(" INFO").
 		Padding(0, 1, 0, 1).
 		Background(lipgloss.AdaptiveColor{
 			Light: "10",
@@ -41,7 +41,7 @@ func New() *log.Logger {
 		Foreground(lipgloss.Color("0"))
 
 	styles.Levels[log.ErrorLevel] = lipgloss.NewStyle().
-		SetString("ERRO").
+		SetString("ERROR").
 		Padding(0, 1, 0, 1).
 		Background(lipgloss.AdaptiveColor{
 			Light: "9",
@@ -50,7 +50,7 @@ func New() *log.Logger {
 		Foreground(lipgloss.Color("0"))
 
 	styles.Levels[log.FatalLevel] = lipgloss.NewStyle().
-		SetString("FATA").
+		SetString("FATAL").
 		Padding(0, 1, 0, 1).
 		Background(lipgloss.AdaptiveColor{
 			Light: "13",
