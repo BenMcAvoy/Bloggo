@@ -3,3 +3,25 @@ package templates
 templ Index() {
     <h1>Hello, world!</h1>
 }
+
+templ Head(title string) {
+    <head>
+        <title>{title}</title>
+    </head>
+}
+
+templ Post(content string) {
+    @Head("RustBytes - Posts")
+
+    <body>
+        {! Unsafe(content) }
+    </body>
+}
+
+// Helper function for displaying unsanitized HTML
+func Unsafe(html string) templ.Component {
+    return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
+        _, err = io.WriteString(w, html)
+        return
+    })
+}
