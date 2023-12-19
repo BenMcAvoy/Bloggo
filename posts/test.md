@@ -1,5 +1,9 @@
 # Hello, world!
 
 ```rust
-println!("Hello, world!");
+fn main() {
+    let a = "a";
+
+    println!("Hello, world!");
+}
 ```
