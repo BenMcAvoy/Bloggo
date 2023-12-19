@@ -95,6 +95,8 @@ func main() {
 	server := echo.New()
 	server.Use(logging.LogMiddleware(logger))
 
+	server.Static("/static", "static")
+
 	server.GET("/", func(ctx echo.Context) error {
 		return templates.Index().Render(context.Background(), ctx.Response().Writer)
 	})
