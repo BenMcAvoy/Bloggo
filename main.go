@@ -15,18 +15,24 @@ import (
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
 
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
-
 	"github.com/knadh/koanf/parsers/toml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
+
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 )
 
 var conf = koanf.New(".")
 var logger = logging.New()
 
 var md = goldmark.New(
-	goldmark.WithExtensions(extension.GFM, highlighting.Highlighting),
+	goldmark.WithExtensions(extension.GFM, highlighting.NewHighlighting(
+		highlighting.WithStyle("doom-one"),
+		highlighting.WithFormatOptions(
+			chromahtml.WithLineNumbers(true),
+		),
+	)),
 	goldmark.WithParserOptions(
 		parser.WithAutoHeadingID(),
 	),
@@ -97,7 +103,7 @@ func main() {
 
 	server.GET("/post/:id", func(ctx echo.Context) error {
 		id := ctx.Param("id")
-		return templates.Post(posts[id]).Render(context.Background(), ctx.Response().Writer)
+		return templates.Base(posts[id]).Render(context.Background(), ctx.Response().Writer)
 	})
 
 	logger.Fatal(server.Start(":1323"))
