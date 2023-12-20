@@ -105,7 +105,7 @@ func main() {
 
 	server.GET("/post/:id", func(ctx echo.Context) error {
 		id := ctx.Param("id")
-		return pages.Page(posts[id]).Render(context.Background(), ctx.Response().Writer)
+		return pages.ExternalPage(id, posts[id]).Render(context.Background(), ctx.Response().Writer)
 	})
 
 	logger.Fatal(server.Start(":1323"))
