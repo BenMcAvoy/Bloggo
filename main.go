@@ -2,7 +2,7 @@ package main
 
 import (
 	"bloggo/logging"
-	"bloggo/templates"
+	"bloggo/templates/pages"
 	"bytes"
 	"context"
 	"os"
@@ -98,14 +98,14 @@ func main() {
 	server.Static("/static", "static")
 
 	server.GET("/", func(ctx echo.Context) error {
-		return templates.Index().Render(context.Background(), ctx.Response().Writer)
+		return pages.Home().Render(context.Background(), ctx.Response().Writer)
 	})
 
 	posts := dirToHtml(conf.String("directories.posts"))
 
 	server.GET("/post/:id", func(ctx echo.Context) error {
 		id := ctx.Param("id")
-		return templates.Base(posts[id]).Render(context.Background(), ctx.Response().Writer)
+		return pages.Page(posts[id]).Render(context.Background(), ctx.Response().Writer)
 	})
 
 	logger.Fatal(server.Start(":1323"))
