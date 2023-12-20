@@ -1,5 +1,10 @@
 @tailwind base;
 
+@font-face {
+ font-family: 'JetBrainsMonoNerdFontRegular';
+ src: url('/static/JetBrainsMonoNerdFont-Regular.ttf');
+}
+
 h1 {
  @apply text-4xl font-bold;
 }
@@ -22,4 +27,14 @@ h5 {
 
 h6 {
  @apply text-base font-bold;
+}
+
+pre {
+  @apply m-4 p-2 border rounded-xl;
+}
+
+pre, code {
+  max-width: 50%;
+  font-family: 'JetBrainsMonoNerdFontRegular';
+  word-wrap: break-word;
 }
