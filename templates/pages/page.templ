@@ -22,3 +22,27 @@ templ Page(title string) {
 		</body>
 	</html>
 }
+
+templ ExternalPage(title string, content string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<title>{ title }</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="robots" content="index, follow"/>
+			<meta name="language" content="English"/>
+			<link rel="stylesheet" href="/static/styles.css"/>
+		</head>
+		<body>
+			@Unsafe(content)
+		</body>
+	</html>
+}
+
+func Unsafe(html string) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
+		_, err = io.WriteString(w, html)
+		return
+	})
+}
