@@ -3,7 +3,7 @@ module bloggo
 go 1.21.5
 
 require (
-	github.com/a-h/templ v0.2.476
+	github.com/a-h/templ v0.2.513
 	github.com/charmbracelet/lipgloss v0.9.1
 	github.com/charmbracelet/log v0.3.1
 	github.com/knadh/koanf/parsers/toml v0.1.0
